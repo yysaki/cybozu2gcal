@@ -24,13 +24,13 @@ const serverlessConfiguration: AWS = {
     },
   },
   functions: {
-    hello: {
-      handler: 'src/handler.hello',
+    cybozu2gcal: {
+      handler: 'src/handler.cybozu2gcal',
       events: [
         {
           http: {
             method: 'get',
-            path: 'hello',
+            path: 'cybozu2gcal',
           }
         }
       ]
