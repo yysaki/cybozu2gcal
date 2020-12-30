@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "chrome-aws-lambda": "^5.5.0",
+    "puppeteer-core": "^5.5.0",
     "source-map-support": "^0.5.19"
   },
   "devDependencies": {
@@ -16,6 +17,7 @@
     "@types/node": "^14.14.6",
     "@types/puppeteer": "^5.4.2",
     "fork-ts-checker-webpack-plugin": "^6.0.0",
+    "puppeteer": "^5.5.0",
     "serverless": "^2.16.1",
     "serverless-webpack": "^5.2.0",
     "ts-loader": "^8.0.10",
