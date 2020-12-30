@@ -5,3 +5,8 @@ export const CYBOZU_BASIC_AUTH = {
 };
 export const CYBOZU_USERNAME = '';
 export const CYBOZU_PASSWORD = '';
+
+export const GOOGLE_API_CLIENT_ID = '';
+export const GOOGLE_API_SECRET = '';
+export const GOOGLE_API_REFRESH_TOKEN = '';
+export const GOOGLE_CALENDAR_ID = '';

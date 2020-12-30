@@ -2,12 +2,17 @@ import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 import chromium from 'chrome-aws-lambda';
 import { Browser, Page } from 'puppeteer';
+import { google } from 'googleapis';
 
 import {
   CYBOZU_BASE_URL,
   CYBOZU_BASIC_AUTH,
   CYBOZU_USERNAME,
-  CYBOZU_PASSWORD
+  CYBOZU_PASSWORD,
+  GOOGLE_API_CLIENT_ID,
+  GOOGLE_API_SECRET,
+  GOOGLE_API_REFRESH_TOKEN,
+  GOOGLE_CALENDAR_ID,
 } from './config';
 
 interface Event {
@@ -102,11 +107,36 @@ const fetchEventsFromCybozu = async () => {
   }
 }
 
+const listCalendars = async () => {
+  /* const SCOPES = ['https://www.googleapis.com/auth/calendar.events']; */
+  const REDIRECT_URI= 'urn:ietf:wg:oauth:2.0:oob';
+
+  const oauth2client = new google.auth.OAuth2(
+    GOOGLE_API_CLIENT_ID,
+    GOOGLE_API_SECRET,
+    REDIRECT_URI,
+  );
+  oauth2client.setCredentials({ refresh_token: GOOGLE_API_REFRESH_TOKEN });
+
+  const calendar = google.calendar({ version: 'v3', auth: oauth2client });
+  
+  const response = await calendar.events.list({
+    calendarId: GOOGLE_CALENDAR_ID,
+    timeMin: (new Date('2020/12/01 00:00')).toISOString(),
+    maxResults: 10,
+    singleEvents: true,
+    orderBy: 'startTime',
+  });
+  return response;
+}
+
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
-  const events = await fetchEventsFromCybozu();
+  /* const events = await fetchEventsFromCybozu(); */
+
+  const result = await listCalendars();
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: events }),
+    body: JSON.stringify({ message: result }),
   };
 }
