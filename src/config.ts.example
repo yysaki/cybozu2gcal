@@ -1,0 +1,7 @@
+export const CYBOZU_BASE_URL = '';
+export const CYBOZU_BASIC_AUTH = {
+  username: '',
+  password: '',
+};
+export const CYBOZU_USERNAME = '';
+export const CYBOZU_PASSWORD = '';
