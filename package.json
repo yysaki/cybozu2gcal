@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "chrome-aws-lambda": "^5.5.0",
+    "googleapis": "^66.0.0",
     "puppeteer-core": "^5.5.0",
     "source-map-support": "^0.5.19"
   },
