@@ -26,6 +26,7 @@ const serverlessConfiguration: AWS = {
   functions: {
     cybozu2gcal: {
       handler: 'src/handler.cybozu2gcal',
+      timeout: 900, // 15 * 60
       events: [
         {
           http: {
