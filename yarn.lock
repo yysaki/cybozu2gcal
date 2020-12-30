@@ -1211,7 +1211,7 @@ chokidar@^3.4.1, chokidar@^3.4.2, chokidar@^3.4.3:
   optionalDependencies:
     fsevents "~2.1.2"
 
-chownr@^1.0.1:
+chownr@^1.0.1, chownr@^1.1.1:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-1.1.4.tgz#6fc9d7b42d32a583596337666e7d08084da2cc6b"
   integrity sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg==
@@ -1220,6 +1220,13 @@ chownr@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
+
+chrome-aws-lambda@^5.5.0:
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/chrome-aws-lambda/-/chrome-aws-lambda-5.5.0.tgz#5b011d1596020b6ab4b92b010e427da1be6fc628"
+  integrity sha512-nYSDzTsVEVsvIFaUUAUN53ulXBLKSRXFS+eVYZOLZD5SA1If59rqBAiy4raMgorQwXWqjSsjK1SF4As+qzPLqA==
+  dependencies:
+    lambdafs "^2.0.0"
 
 chrome-trace-event@^1.0.2:
   version "1.0.2"
@@ -2977,6 +2984,13 @@ kuler@1.0.x:
   dependencies:
     colornames "^1.1.1"
 
+lambdafs@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/lambdafs/-/lambdafs-2.0.1.tgz#ddbee479e8e204dc17f1a43307ec3ae1df9ea485"
+  integrity sha512-RNb7Si2XPvU6pPiE6S0eDfH1W3n+OQaxpclSPJD0hnNFA5z+U1Ntr4sgUEE9xSxVu932ufh1iwtBcIxpEM9bOw==
+  dependencies:
+    tar-fs "^2.1.1"
+
 lazystream@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lazystream/-/lazystream-1.0.0.tgz#f6995fe0f820392f61396be89462407bb77168e4"
@@ -3249,6 +3263,11 @@ minizlib@^2.1.1:
   dependencies:
     minipass "^3.0.0"
     yallist "^4.0.0"
+
+mkdirp-classic@^0.5.2:
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/mkdirp-classic/-/mkdirp-classic-0.5.3.tgz#fa10c9115cc6d8865be221ba47ee9bed78601113"
+  integrity sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==
 
 mkdirp@^0.5.1:
   version "0.5.5"
@@ -4518,6 +4537,16 @@ tar-fs@^1.13.0:
     mkdirp "^0.5.1"
     pump "^1.0.0"
     tar-stream "^1.1.2"
+
+tar-fs@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/tar-fs/-/tar-fs-2.1.1.tgz#489a15ab85f1f0befabb370b7de4f9eb5cbe8784"
+  integrity sha512-V0r2Y9scmbDRLCNex/+hYzvp/zyYjvFbHPNgVTKfQvVrb6guiE/fxP+XblDNR011utopbkex2nM4dHNV6GDsng==
+  dependencies:
+    chownr "^1.1.1"
+    mkdirp-classic "^0.5.2"
+    pump "^3.0.0"
+    tar-stream "^2.1.4"
 
 tar-stream@^1.1.2, tar-stream@^1.5.2:
   version "1.6.2"
