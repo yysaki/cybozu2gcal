@@ -4,56 +4,13 @@ import { calendar_v3 } from 'googleapis';
 import { GOOGLE_CALENDAR_ID as calendarId } from './config';
 import { Event, isUnique, minMaxDateFrom } from './entity';
 
-const listEvents = async (calendar: calendar_v3.Calendar, timeMin: string, timeMax: string) => {
-  const { data: { items } } = await calendar.events.list({
-    calendarId,
-    timeMin,
-    timeMax,
-    maxResults: 250,
-    singleEvents: true,
-    orderBy: 'startTime',
-  });
-
-  return items || [];
-}
-
-const buildEvent = (event: Event): calendar_v3.Schema$Event => {
+const buildBody = (event: Event): calendar_v3.Schema$Event => {
   return {
     summary: event.title,
     description: event.eid,
     start: { dateTime: event.startedAt },
     end: { dateTime: event.endedAt},
   };
-}
-
-const insertEvent = async (calendar: calendar_v3.Calendar, event: Event) => {
-  const requestBody = buildEvent(event);
-
-  return await calendar.events.insert({
-    calendarId,
-    requestBody
-  });
-}
-
-const deleteEvent = async (calendar: calendar_v3.Calendar, { googleId }: Event) => {
-  return await calendar.events.delete({
-    calendarId,
-    eventId: googleId || '',
-  });
-}
-
-const minMaxISOTime = (events: Event[]) => {
-  const unixTimes = events
-    .map(e => [e.startedAt, e.endedAt])
-    .reduce((array, value) => array.concat(value))
-    .map(d => new Date(d).getTime());
-
-  const result: [string, string] = [
-    new Date(Math.min(...unixTimes)).toISOString(),
-    new Date(Math.max(...unixTimes)).toISOString()
-  ]
-
-  return result;
 }
 
 const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
@@ -66,26 +23,32 @@ const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
   };
 }
 
-const isUnique = (lhs: Event, rhs: Event) => {
-  return lhs.eid === rhs.eid && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
-};
+const listEvents = async (calendar: calendar_v3.Calendar, timeMin: string, timeMax: string) => {
+  const response = await calendar.events.list({ calendarId, timeMin, timeMax, singleEvents: true });
 
-const syncEvents = async (calendar: calendar_v3.Calendar, events: Event[], googleEvents: calendar_v3.Schema$Event[]) => {
-  const existsEvents = googleEvents.map(eventFrom);
-  const insertTargets = events.filter(e1 => existsEvents.every(e2 => !isUnique(e1, e2)));
-  const deleteTargets = existsEvents.filter(e1 => events.every(e2 => !isUnique(e1, e2)));
+  return response.data.items || [];
+}
 
-  await Promise.all(insertTargets.map(async event => await insertEvent(calendar, event)));
-  await Promise.all(deleteTargets.map(async event => await deleteEvent(calendar, event)));
+const insertEvent = async (calendar: calendar_v3.Calendar, event: Event) => {
+  return await calendar.events.insert({ calendarId, requestBody: buildBody(event) });
+}
 
-  return `inserted: ${insertTargets.length}, deleted: ${deleteTargets.length}`;
+const deleteEvent = async (calendar: calendar_v3.Calendar, { googleId }: Event) => {
+  return await calendar.events.delete({ calendarId, eventId: googleId || '' });
 }
 
 export const syncToGoogleCalendarUsecase = (calendar: calendar_v3.Calendar) => {
   return async (events: Event[]) => {
-    const googleEvents = await listEvents(calendar, ...minMaxISOTime(events));
+    const { timeMin, timeMax } = minMaxDateFrom(events);
+    const googleEvents = await listEvents(calendar, timeMin.toISOString(), timeMax.toISOString());
 
-    const result = await syncEvents(calendar, events, googleEvents);
-    return result;
+    const existEvents = googleEvents.map(eventFrom);
+    const insertTargets = events.filter(e1 => existEvents.every(e2 => !isUnique(e1, e2)));
+    const deleteTargets = existEvents.filter(e1 => events.every(e2 => !isUnique(e1, e2)));
+
+    await Promise.all(insertTargets.map(async event => await insertEvent(calendar, event)));
+    await Promise.all(deleteTargets.map(async event => await deleteEvent(calendar, event)));
+
+    return `inserted: ${insertTargets.length}, deleted: ${deleteTargets.length}`;
   }
 }
