@@ -27,10 +27,10 @@ const parse = ({ title, href, eventTime }: QueryResult): Event | undefined => {
 
     if (timeSpanMatch) {
       startedTime = { hour: timeSpanMatch[1], minute: timeSpanMatch[2] };
-      startedTime = { hour: timeSpanMatch[3], minute: timeSpanMatch[4] };
+      endedTime = { hour: timeSpanMatch[3], minute: timeSpanMatch[4] };
     } else if (timeMatch) {
       startedTime = { hour: timeMatch[1], minute: timeMatch[2] };
-      startedTime = { hour: timeMatch[1], minute: timeMatch[2] };
+      endedTime = { hour: timeMatch[1], minute: timeMatch[2] };
     }
   }
 
