@@ -29,3 +29,15 @@ export interface Event {
 export const isUnique = (lhs: Event, rhs: Event) => {
   return lhs.eid === rhs.eid && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
 };
+
+export const minMaxDateFrom = (events: Event[]) => {
+  const unixTimes = events
+    .map(e => [e.startedAt, e.endedAt])
+    .reduce((array, value) => array.concat(value))
+    .map(d => new Date(d).getTime());
+
+  return {
+    timeMin: new Date(Math.min(...unixTimes)),
+    timeMax: new Date(Math.max(...unixTimes))
+  }
+}
