@@ -22,6 +22,18 @@ interface Event {
   endedAt: string;
 };
 
+interface BuildDateParam {
+  year: string,
+  month: string,
+  day: string,
+  hour: string,
+  minute: string
+}
+
+const buildDate = ({ year, month, day, hour, minute }: BuildDateParam) => {
+  return `${year}-${month}-${day}T${hour}:${minute}:0+09:00`;
+}
+
 const fetchEvents = async (schedulePage: Page): Promise<Event[]> => {
   return await schedulePage.evaluate(() => {
     const result: Event[] = [];
@@ -36,8 +48,10 @@ const fetchEvents = async (schedulePage: Page): Promise<Event[]> => {
 
       const eid = match[7];
 
-      let startedTime = '00:00';
-      let endedTime = '23:59';
+      const startedDate = { year: match[1], month: match[2], day: match[3] };
+      const endedDate = { year: match[4], month: match[5], day: match[6] };
+      let startedTime = { hour: '0', minute: '0' };
+      let endedTime = { hour: '23', minute: '59' };
 
       const eventTime: HTMLSpanElement | null = element.querySelector('span.eventDateTime');
       if (eventTime?.innerText) {
@@ -45,16 +59,16 @@ const fetchEvents = async (schedulePage: Page): Promise<Event[]> => {
         const timeMatch = eventTime.innerText.match(/([0-9]+):([0-9]+)/);
 
         if (timeSpanMatch) {
-          startedTime = `${timeSpanMatch[1]}:${timeSpanMatch[2]}`;
-          endedTime = `${timeSpanMatch[3]}:${timeSpanMatch[4]}`;
+          startedTime = { hour: timeSpanMatch[1], minute: timeSpanMatch[2] };
+          startedTime = { hour: timeSpanMatch[3], minute: timeSpanMatch[4] };
         } else if (timeMatch) {
-          startedTime = `${timeMatch[1]}:${timeMatch[2]}`;
-          endedTime = `${timeMatch[1]}:${timeMatch[2]}`;
+          startedTime = { hour: timeMatch[1], minute: timeMatch[2] };
+          startedTime = { hour: timeMatch[1], minute: timeMatch[2] };
         }
       }
 
-      const startedAt = `${match[1]}/${match[2]}/${match[3]} ${startedTime}`;
-      const endedAt = `${match[4]}/${match[5]}/${match[6]} ${endedTime}`;
+      const startedAt = buildDate({ ...startedDate, ...startedTime });
+      const endedAt = buildDate({ ...endedDate, ...endedTime });
 
       result.push({ title: event.title, eid, startedAt, endedAt});
     });
