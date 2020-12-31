@@ -26,3 +26,6 @@ export interface Event {
   endedAt: string;
 };
 
+export const isUnique = (lhs: Event, rhs: Event) => {
+  return lhs.eid === rhs.eid && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
+};

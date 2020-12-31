@@ -2,7 +2,7 @@ import 'source-map-support/register';
 import { calendar_v3 } from 'googleapis';
 
 import { GOOGLE_CALENDAR_ID as calendarId } from './config';
-import { Event } from './entity';
+import { Event, isUnique } from './entity';
 
 const listEvents = async (calendar: calendar_v3.Calendar, timeMin: string, timeMax: string) => {
   const { data: { items } } = await calendar.events.list({
