@@ -9,9 +9,9 @@ const buildBody = (event: Event): calendar_v3.Schema$Event => {
     summary: event.title,
     description: event.eid,
     start: { dateTime: event.startedAt },
-    end: { dateTime: event.endedAt},
+    end: { dateTime: event.endedAt },
   };
-}
+};
 
 const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
   return {
@@ -21,21 +21,29 @@ const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
     startedAt: googleEvent.start?.dateTime || '',
     endedAt: googleEvent.end?.dateTime || '',
   };
-}
+};
 
 const listEvents = async (calendar: calendar_v3.Calendar, timeMin: string, timeMax: string) => {
-  const response = await calendar.events.list({ calendarId, timeMin, timeMax, singleEvents: true });
+  const response = await calendar.events.list({
+    calendarId,
+    timeMin,
+    timeMax,
+    singleEvents: true,
+  });
 
   return response.data.items || [];
-}
+};
 
 const insertEvent = async (calendar: calendar_v3.Calendar, event: Event) => {
-  return await calendar.events.insert({ calendarId, requestBody: buildBody(event) });
-}
+  return await calendar.events.insert({
+    calendarId,
+    requestBody: buildBody(event),
+  });
+};
 
 const deleteEvent = async (calendar: calendar_v3.Calendar, { googleId }: Event) => {
   return await calendar.events.delete({ calendarId, eventId: googleId || '' });
-}
+};
 
 export const syncToGoogleCalendarUsecase = (calendar: calendar_v3.Calendar) => {
   return async (events: Event[]): Promise<string> => {
@@ -43,12 +51,12 @@ export const syncToGoogleCalendarUsecase = (calendar: calendar_v3.Calendar) => {
     const googleEvents = await listEvents(calendar, timeMin.toISOString(), timeMax.toISOString());
 
     const existEvents = googleEvents.map(eventFrom);
-    const insertTargets = events.filter(e1 => existEvents.every(e2 => !isUnique(e1, e2)));
-    const deleteTargets = existEvents.filter(e1 => events.every(e2 => !isUnique(e1, e2)));
+    const insertTargets = events.filter((e1) => existEvents.every((e2) => !isUnique(e1, e2)));
+    const deleteTargets = existEvents.filter((e1) => events.every((e2) => !isUnique(e1, e2)));
 
-    await Promise.all(insertTargets.map(async event => await insertEvent(calendar, event)));
-    await Promise.all(deleteTargets.map(async event => await deleteEvent(calendar, event)));
+    await Promise.all(insertTargets.map(async (event) => await insertEvent(calendar, event)));
+    await Promise.all(deleteTargets.map(async (event) => await deleteEvent(calendar, event)));
 
     return `inserted: ${insertTargets.length}, deleted: ${deleteTargets.length}`;
-  }
-}
+  };
+};

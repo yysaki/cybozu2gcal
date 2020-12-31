@@ -16,21 +16,16 @@ import {
 import { fetchEventsFromCybozuUsecase } from './fetchEventsFromCybozuUsecase';
 import { syncToGoogleCalendarUsecase } from './syncToGoogleCalendarUsecase';
 
-
 const setupCalendar = () => {
   /* const SCOPES = ['https://www.googleapis.com/auth/calendar.events']; */
-  const REDIRECT_URI= 'urn:ietf:wg:oauth:2.0:oob';
+  const REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob';
 
-  const oauth2client = new google.auth.OAuth2(
-    GOOGLE_API_CLIENT_ID,
-    GOOGLE_API_SECRET,
-    REDIRECT_URI,
-  );
+  const oauth2client = new google.auth.OAuth2(GOOGLE_API_CLIENT_ID, GOOGLE_API_SECRET, REDIRECT_URI);
   oauth2client.setCredentials({ refresh_token: GOOGLE_API_REFRESH_TOKEN });
 
   const calendar = google.calendar({ version: 'v3', auth: oauth2client });
   return calendar;
-}
+};
 
 const launchBrowserPage = async () => {
   return await chromium.puppeteer.launch({
@@ -40,7 +35,7 @@ const launchBrowserPage = async () => {
     headless: false,
     ignoreHTTPSErrors: true,
   });
-}
+};
 
 const openCybozuSchedulePage = async (browser: Browser) => {
   const page = await browser.newPage();
@@ -56,19 +51,13 @@ const openCybozuSchedulePage = async (browser: Browser) => {
     await page.type("input[name='_Account']", CYBOZU_USERNAME);
     await page.type("input[name='Password']", CYBOZU_PASSWORD);
 
-    await Promise.all([
-      page.click("input[name='Submit']"),
-      page.waitForNavigation(),
-    ]);
+    await Promise.all([page.click("input[name='Submit']"), page.waitForNavigation()]);
   }
 
-  await Promise.all([
-    page.waitForNavigation(),
-    page.goto(CYBOZU_BASE_URL + '?page=ScheduleUserMonth'),
-  ]);
+  await Promise.all([page.waitForNavigation(), page.goto(CYBOZU_BASE_URL + '?page=ScheduleUserMonth')]);
 
   return page;
-}
+};
 
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
   let browser: Browser | null = null;
@@ -91,4 +80,4 @@ export const cybozu2gcal: APIGatewayProxyHandler = async () => {
       await browser.close();
     }
   }
-}
+};

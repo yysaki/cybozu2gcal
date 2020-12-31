@@ -6,8 +6,8 @@ const serverlessConfiguration: AWS = {
   custom: {
     webpack: {
       webpackConfig: './webpack.config.js',
-      includeModules: true
-    }
+      includeModules: true,
+    },
   },
   // Add the serverless-webpack plugin
   plugins: ['serverless-webpack'],
@@ -29,17 +29,17 @@ const serverlessConfiguration: AWS = {
       timeout: 900, // 15 * 60
       events: [
         {
-          schedule: 'rate(2 hours)'
+          schedule: 'rate(2 hours)',
         },
         {
           http: {
             method: 'get',
             path: 'cybozu2gcal',
-          }
-        }
-      ]
-    }
-  }
-}
+          },
+        },
+      ],
+    },
+  },
+};
 
 module.exports = serverlessConfiguration;
