@@ -18,6 +18,7 @@ import {
 interface Event {
   title: string;
   eid: string;
+  googleId?: string;
   startedAt: string;
   endedAt: string;
 };
@@ -28,10 +29,6 @@ interface BuildDateParam {
   day: string,
   hour: string,
   minute: string
-}
-
-const buildDate = ({ year, month, day, hour, minute }: BuildDateParam) => {
-  return `${year}-${month}-${day}T${hour}:${minute}:0+09:00`;
 }
 
 const fetchEvents = async (schedulePage: Page): Promise<Event[]> => {
@@ -67,10 +64,16 @@ const fetchEvents = async (schedulePage: Page): Promise<Event[]> => {
         }
       }
 
+      const buildDate = ({ year, month, day, hour, minute }: BuildDateParam) => {
+        const pad = (num: string) =>('00' + num).slice(-2);
+
+        return `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:00+09:00`; // Asia/Tokyo
+      }
+
       const startedAt = buildDate({ ...startedDate, ...startedTime });
       const endedAt = buildDate({ ...endedDate, ...endedTime });
 
-      result.push({ title: event.title, eid, startedAt, endedAt});
+      result.push({ title: event.title, eid, startedAt, endedAt });
     });
 
     return result;
@@ -121,16 +124,84 @@ const fetchEventsFromCybozu = async () => {
   }
 }
 
-const buildEvent = (): calendar_v3.Schema$Event => {
-  return {
-    summary: 'insert test',
-    description: 'EID: hogehogehoge',
-    start: { dateTime: '2020-12-29T0:0:0+09:00' },
-    end: { dateTime: '2020-12-29T23:59:0+09:00' },
-  }
+const listEvents = async (calendar: calendar_v3.Calendar, timeMin: string, timeMax: string) => {
+  const { data: { items } } = await calendar.events.list({
+    calendarId: GOOGLE_CALENDAR_ID,
+    timeMin,
+    timeMax,
+    maxResults: 250,
+    singleEvents: true,
+    orderBy: 'startTime',
+  });
+
+  return items || [];
 }
 
-const insertEvent = async () => {
+const buildEvent = (event: Event): calendar_v3.Schema$Event => {
+  return {
+    summary: event.title,
+    description: event.eid,
+    start: { dateTime: event.startedAt },
+    end: { dateTime: event.endedAt},
+  };
+}
+
+const insertEvent = async (calendar: calendar_v3.Calendar, event: Event) => {
+  const requestBody = buildEvent(event);
+
+  return await calendar.events.insert({
+    calendarId: GOOGLE_CALENDAR_ID,
+    requestBody
+  });
+}
+
+const deleteEvent = async (calendar: calendar_v3.Calendar, { googleId }: Event) => {
+  return await calendar.events.delete({
+    calendarId: GOOGLE_CALENDAR_ID,
+    eventId: googleId || '',
+  });
+}
+
+const minMaxISOTime = (events: Event[]) => {
+  const unixTimes = events
+    .map(e => [e.startedAt, e.endedAt])
+    .reduce((array, value) => array.concat(value))
+    .map(d => new Date(d).getTime());
+
+  const result: [string, string] = [
+    new Date(Math.min(...unixTimes)).toISOString(),
+    new Date(Math.max(...unixTimes)).toISOString()
+  ]
+
+  return result;
+}
+
+const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
+  return {
+    title: googleEvent.summary || '',
+    eid: googleEvent.description || '',
+    googleId: googleEvent.id || '',
+    startedAt: googleEvent.start?.dateTime || '',
+    endedAt: googleEvent.end?.dateTime || '',
+  };
+}
+
+const isUnique = (lhs: Event, rhs: Event) => {
+  return lhs.eid === rhs.eid && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
+};
+
+const syncEvents = async (_calendar: calendar_v3.Calendar, events: Event[], googleEvents: calendar_v3.Schema$Event[]) => {
+  const existsEvents = googleEvents.map(eventFrom);
+  const insertTargets = events.filter(e1 => existsEvents.every(e2 => !isUnique(e1, e2)));
+  const deleteTargets = existsEvents.filter(e1 => events.every(e2 => !isUnique(e1, e2)));
+
+  /* await Promise.all(insertTargets.map(async event => await insertEvent(calendar, event))); */
+  /* await Promise.all(deleteTargets.map(async event => await deleteEvent(calendar, event))); */
+
+  return `inserted: ${insertTargets.length}, deleted: ${deleteTargets.length}`;
+}
+
+const syncToGoogleCalendar = async (events: Event[]) => {
   /* const SCOPES = ['https://www.googleapis.com/auth/calendar.events']; */
   const REDIRECT_URI= 'urn:ietf:wg:oauth:2.0:oob';
 
@@ -142,21 +213,19 @@ const insertEvent = async () => {
   oauth2client.setCredentials({ refresh_token: GOOGLE_API_REFRESH_TOKEN });
 
   const calendar = google.calendar({ version: 'v3', auth: oauth2client });
-  
-  const response = await calendar.events.insert({
-    calendarId: GOOGLE_CALENDAR_ID,
-    requestBody: buildEvent(),
-  });
-  return response;
+  const googleEvents = await listEvents(calendar, ...minMaxISOTime(events));
+
+  const result = await syncEvents(calendar, events, googleEvents);
+  return result;
 }
 
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
-  /* const events = await fetchEventsFromCybozu(); */
+  const events = await fetchEventsFromCybozu();
 
-  const result = await insertEvent();
+  const message = await syncToGoogleCalendar(events);
 
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: result }),
+    body: JSON.stringify({ message }),
   };
 }
