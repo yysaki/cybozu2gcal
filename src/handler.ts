@@ -64,8 +64,12 @@ const fetchEvents = async (schedulePage: Page): Promise<Event[]> => {
         }
       }
 
-      const buildDate = ({ year, month, day, hour, minute }: BuildDateParam) => {
-        const pad = (num: string) =>('00' + num).slice(-2);
+      const buildDate = ({ year, month, day, ...rest }: BuildDateParam) => {
+        const pad = (num: string) => ('00' + num).slice(-2);
+
+        // 24:00 を 23:59 に読み替え
+        const hour = rest.hour === '24' ? '23' : rest.hour;
+        const minute = rest.hour === '24' ? '59' : rest.minute;
 
         return `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:00+09:00`; // Asia/Tokyo
       }
