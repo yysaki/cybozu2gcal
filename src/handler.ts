@@ -190,13 +190,13 @@ const isUnique = (lhs: Event, rhs: Event) => {
   return lhs.eid === rhs.eid && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
 };
 
-const syncEvents = async (_calendar: calendar_v3.Calendar, events: Event[], googleEvents: calendar_v3.Schema$Event[]) => {
+const syncEvents = async (calendar: calendar_v3.Calendar, events: Event[], googleEvents: calendar_v3.Schema$Event[]) => {
   const existsEvents = googleEvents.map(eventFrom);
   const insertTargets = events.filter(e1 => existsEvents.every(e2 => !isUnique(e1, e2)));
   const deleteTargets = existsEvents.filter(e1 => events.every(e2 => !isUnique(e1, e2)));
 
-  /* await Promise.all(insertTargets.map(async event => await insertEvent(calendar, event))); */
-  /* await Promise.all(deleteTargets.map(async event => await deleteEvent(calendar, event))); */
+  await Promise.all(insertTargets.map(async event => await insertEvent(calendar, event)));
+  await Promise.all(deleteTargets.map(async event => await deleteEvent(calendar, event)));
 
   return `inserted: ${insertTargets.length}, deleted: ${deleteTargets.length}`;
 }
