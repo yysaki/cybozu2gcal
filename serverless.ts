@@ -29,6 +29,9 @@ const serverlessConfiguration: AWS = {
       timeout: 900, // 15 * 60
       events: [
         {
+          schedule: 'rate(2 hours)'
+        },
+        {
           http: {
             method: 'get',
             path: 'cybozu2gcal',
