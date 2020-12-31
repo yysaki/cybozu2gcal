@@ -9,7 +9,7 @@ interface QueryResult {
   eventTime?: string,
 }
 
-const parseResult = ({ title, href, eventTime }: QueryResult): Event | undefined => {
+const parse = ({ title, href, eventTime }: QueryResult): Event | undefined => {
   const regexp = /\Date=da\.([0-9]+)\.([0-9]+)\.([0-9]+)\&BDate=da\.([0-9]+)\.([0-9]+)\.([0-9]+)\&sEID=([0-9]+)/
   const match = href.match(regexp);
   if (!match) return;
@@ -56,6 +56,6 @@ export const fetchEventsFromCybozuUsecase = (schedulePage: Page) => {
       return result;
     });
 
-    return evaluated.map(parseResult).filter<Event>((e): e is Event => !!e);
+    return evaluated.map(parse).filter<Event>((e): e is Event => !!e);
   }
 }
