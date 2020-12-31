@@ -1,11 +1,8 @@
-import { APIGatewayProxyHandler } from 'aws-lambda';
+import { APIGatewayProxyHandler } from 'aws-lambda'; // eslint-disable-line import/no-unresolved
 import 'source-map-support/register';
+import chromium from 'chrome-aws-lambda';
 import { google } from 'googleapis';
 import { Browser } from 'puppeteer';
-import chromium from 'chrome-aws-lambda';
-
-import { fetchEventsFromCybozuUsecase } from './fetchEventsFromCybozuUsecase';
-import { syncToGoogleCalendarUsecase } from './syncToGoogleCalendarUsecase';
 
 import {
   CYBOZU_BASE_URL,
@@ -16,6 +13,9 @@ import {
   GOOGLE_API_SECRET,
   GOOGLE_API_REFRESH_TOKEN,
 } from './config';
+import { fetchEventsFromCybozuUsecase } from './fetchEventsFromCybozuUsecase';
+import { syncToGoogleCalendarUsecase } from './syncToGoogleCalendarUsecase';
+
 
 const setupCalendar = () => {
   /* const SCOPES = ['https://www.googleapis.com/auth/calendar.events']; */

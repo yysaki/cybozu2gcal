@@ -25,6 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^4.11.1",
     "@typescript-eslint/parser": "^4.11.1",
     "eslint": "^7.16.0",
+    "eslint-plugin-import": "^2.22.1",
     "fork-ts-checker-webpack-plugin": "^6.0.0",
     "puppeteer": "^5.5.0",
     "serverless": "^2.16.1",
