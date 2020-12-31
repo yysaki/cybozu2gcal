@@ -43,7 +43,7 @@ const launchBrowserPage = async () => {
 }
 
 const openCybozuSchedulePage = async (browser: Browser) => {
-  let page = await browser.newPage();
+  const page = await browser.newPage();
 
   await page.authenticate(CYBOZU_BASIC_AUTH);
   await page.goto(CYBOZU_BASE_URL);

@@ -38,7 +38,7 @@ const deleteEvent = async (calendar: calendar_v3.Calendar, { googleId }: Event) 
 }
 
 export const syncToGoogleCalendarUsecase = (calendar: calendar_v3.Calendar) => {
-  return async (events: Event[]) => {
+  return async (events: Event[]): Promise<string> => {
     const { timeMin, timeMax } = minMaxDateFrom(events);
     const googleEvents = await listEvents(calendar, timeMin.toISOString(), timeMax.toISOString());
 

@@ -8,7 +8,7 @@ interface BuildDateTimeParam {
   minute: string
 }
 
-export const buildDateTime = ({ year, month, day, ...rest }: BuildDateTimeParam) => {
+export const buildDateTime = ({ year, month, day, ...rest }: BuildDateTimeParam): string => {
   const pad = (num: string) => ('00' + num).slice(-2);
 
   // 24:00 を 23:59 に読み替え
@@ -24,13 +24,13 @@ export interface Event {
   googleId?: string;
   startedAt: string;
   endedAt: string;
-};
+}
 
-export const isUnique = (lhs: Event, rhs: Event) => {
+export const isUnique = (lhs: Event, rhs: Event): boolean => {
   return lhs.eid === rhs.eid && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
 };
 
-export const minMaxDateFrom = (events: Event[]) => {
+export const minMaxDateFrom = (events: Event[]): { timeMin: Date, timeMax: Date } => {
   const unixTimes = events
     .map(e => [e.startedAt, e.endedAt])
     .reduce((array, value) => array.concat(value))
