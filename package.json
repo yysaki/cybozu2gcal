@@ -1,9 +1,13 @@
 {
   "name": "cybozu2gcal",
   "version": "0.1.0",
-  "description": "Serverless webpack example using Typescript",
+  "description": "Sync calendar events from cybozu to google calendar",
   "main": "handler.js",
   "scripts": {
+    "deploy": "sls deploy",
+    "package": "sls package",
+    "run": "sls invoke -f cybozu2gcal",
+    "run:local": "sls invoke local -f cybozu2gcal",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
@@ -27,6 +31,7 @@
     "webpack": "^5.4.0",
     "webpack-node-externals": "^2.5.2"
   },
-  "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
-  "license": "MIT"
+  "author": "yysaki",
+  "license": "MIT",
+  "private": true
 }
