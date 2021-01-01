@@ -15,7 +15,7 @@ const parse = ({ title, href, eventTime }: EvaluateResult): Event | undefined =>
   const match = href.match(regexp);
   if (!match) return;
 
-  const eid = match[7];
+  const id = match[7];
 
   const startedDate = { year: match[1], month: match[2], day: match[3] };
   const endedDate = { year: match[4], month: match[5], day: match[6] };
@@ -38,7 +38,7 @@ const parse = ({ title, href, eventTime }: EvaluateResult): Event | undefined =>
   const startedAt = buildDateTime({ ...startedDate, ...startedTime });
   const endedAt = buildDateTime({ ...endedDate, ...endedTime });
 
-  return { title, eid, startedAt, endedAt };
+  return { id, title, startedAt, endedAt };
 };
 
 export const fetchEventsFromCybozuUsecase = (evaluate: EvaluateCybozuPage) => {

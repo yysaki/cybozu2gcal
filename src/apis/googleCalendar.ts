@@ -19,7 +19,7 @@ export const authGoogleApi = (): GoogleCalendarRepository => {
 const buildBody = (event: Event): calendar_v3.Schema$Event => {
   return {
     summary: event.title,
-    description: event.eid,
+    description: event.id,
     start: { dateTime: event.startedAt },
     end: { dateTime: event.endedAt },
   };
@@ -27,9 +27,9 @@ const buildBody = (event: Event): calendar_v3.Schema$Event => {
 
 const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
   return {
+    id: googleEvent.description || '',
+    googleEventId: googleEvent.id || '',
     title: googleEvent.summary || '',
-    eid: googleEvent.description || '',
-    googleId: googleEvent.id || '',
     startedAt: googleEvent.start?.dateTime || '',
     endedAt: googleEvent.end?.dateTime || '',
   };
@@ -61,10 +61,10 @@ class Repository implements GoogleCalendarRepository {
     });
   }
 
-  async delete({ googleId }: Event) {
+  async delete({ googleEventId }: Event) {
     await this.#calendar.events.delete({
       calendarId: GOOGLE_CALENDAR_ID,
-      eventId: googleId || '',
+      eventId: googleEventId || '',
     });
   }
 }

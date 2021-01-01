@@ -19,15 +19,15 @@ export const buildDateTime = ({ year, month, day, ...rest }: BuildDateTimeParam)
 };
 
 export interface Event {
+  id: string;
+  googleEventId?: string;
   title: string;
-  eid: string;
-  googleId?: string;
   startedAt: string;
   endedAt: string;
 }
 
 export const isUnique = (lhs: Event, rhs: Event): boolean => {
-  return lhs.eid === rhs.eid && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
+  return lhs.id === rhs.id && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
 };
 
 export const minMaxDateFrom = (events: Event[]): { timeMin: Date; timeMax: Date } => {
