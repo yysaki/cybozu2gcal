@@ -13,8 +13,7 @@ import {
   GOOGLE_API_SECRET,
   GOOGLE_API_REFRESH_TOKEN,
 } from './config';
-import { fetchEventsFromCybozuUsecase } from './fetchEventsFromCybozuUsecase';
-import { syncToGoogleCalendarUsecase } from './syncToGoogleCalendarUsecase';
+import { fetchEventsFromCybozuUsecase, syncToGoogleCalendarUsecase } from './usecases';
 
 const setupCalendar = () => {
   /* const SCOPES = ['https://www.googleapis.com/auth/calendar.events']; */

@@ -1,8 +1,8 @@
 import 'source-map-support/register';
 import { calendar_v3 } from 'googleapis';
 
-import { GOOGLE_CALENDAR_ID as calendarId } from './config';
-import { Event, isUnique, minMaxDateFrom } from './entity';
+import { GOOGLE_CALENDAR_ID as calendarId } from '../config';
+import { Event, isUnique, minMaxDateFrom } from '../entity';
 
 const buildBody = (event: Event): calendar_v3.Schema$Event => {
   return {

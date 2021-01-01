@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 import { Page } from 'puppeteer';
 
-import { buildDateTime, Event } from './entity';
+import { buildDateTime, Event } from '../entity';
 
 interface QueryResult {
   title: string;
