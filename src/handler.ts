@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'; // eslint-disable-line import/no-unresolved
 import 'source-map-support/register';
 
-import { setupCalendar, using } from './apis';
+import { authGoogleApi, using } from './apis';
 import { fetchEventsFromCybozuUsecase, syncToGoogleCalendarUsecase } from './usecases';
 
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
@@ -9,9 +9,9 @@ export const cybozu2gcal: APIGatewayProxyHandler = async () => {
     const fetch = fetchEventsFromCybozuUsecase(evaluate);
     const events = await fetch();
 
-    const googleCalendar = setupCalendar();
+    const googleCalendarRepository = authGoogleApi();
 
-    const sync = syncToGoogleCalendarUsecase(googleCalendar);
+    const sync = syncToGoogleCalendarUsecase(googleCalendarRepository);
     const body = await sync(events);
 
     return { statusCode: 200, body };
