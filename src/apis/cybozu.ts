@@ -3,17 +3,30 @@ import chromium from 'chrome-aws-lambda';
 import { Browser, Page } from 'puppeteer';
 import { CYBOZU_BASE_URL, CYBOZU_BASIC_AUTH, CYBOZU_USERNAME, CYBOZU_PASSWORD } from '../config';
 
-export const launchBrowserPage = async (): Promise<Browser> => {
-  return await chromium.puppeteer.launch({
-    args: chromium.args,
-    defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: false,
-    ignoreHTTPSErrors: true,
-  });
+type Callback<T> = (page: Page) => Promise<T>;
+
+export const using = async <T>(callback: Callback<T>): Promise<T> => {
+  let browser: Browser | null = null;
+  try {
+    browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: false,
+      ignoreHTTPSErrors: true,
+    });
+
+    const page = await openCybozuSchedulePage(browser);
+
+    return await callback(page);
+  } finally {
+    if (browser !== null) {
+      await browser.close();
+    }
+  }
 };
 
-export const openCybozuSchedulePage = async (browser: Browser): Promise<Page> => {
+const openCybozuSchedulePage = async (browser: Browser): Promise<Page> => {
   const page = await browser.newPage();
 
   await page.authenticate(CYBOZU_BASIC_AUTH);
