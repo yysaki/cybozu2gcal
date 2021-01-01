@@ -7,7 +7,7 @@ import { EvaluateCybozuPage, EvaluateResult } from '../usecases';
 
 type Callback<T> = (evaluate: EvaluateCybozuPage) => Promise<T>;
 
-export const using = async <T>(callback: Callback<T>): Promise<T> => {
+export const usingPuppeteer = async <T>(callback: Callback<T>): Promise<T> => {
   let browser: Browser | null = null;
   try {
     browser = await chromium.puppeteer.launch({

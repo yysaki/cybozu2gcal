@@ -1,11 +1,11 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'; // eslint-disable-line import/no-unresolved
 import 'source-map-support/register';
 
-import { authGoogleApi, using } from './apis';
+import { authGoogleApi, usingPuppeteer } from './apis';
 import { fetchEventsFromCybozuUsecase, syncToGoogleCalendarUsecase } from './usecases';
 
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
-  return await using<APIGatewayProxyResult>(async (evaluate) => {
+  return await usingPuppeteer<APIGatewayProxyResult>(async (evaluate) => {
     const fetch = fetchEventsFromCybozuUsecase(evaluate);
     const events = await fetch();
 
