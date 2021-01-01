@@ -3,7 +3,9 @@ import chromium from 'chrome-aws-lambda';
 import { Browser, Page } from 'puppeteer';
 import { CYBOZU_BASE_URL, CYBOZU_BASIC_AUTH, CYBOZU_USERNAME, CYBOZU_PASSWORD } from '../config';
 
-type Callback<T> = (page: Page) => Promise<T>;
+import { EvaluateCybozuPage, EvaluateResult } from '../usecases';
+
+type Callback<T> = (evaluate: EvaluateCybozuPage) => Promise<T>;
 
 export const using = async <T>(callback: Callback<T>): Promise<T> => {
   let browser: Browser | null = null;
@@ -16,9 +18,10 @@ export const using = async <T>(callback: Callback<T>): Promise<T> => {
       ignoreHTTPSErrors: true,
     });
 
-    const page = await openCybozuSchedulePage(browser);
+    const page = await openSchedulePage(browser);
+    const fetchQuery = createFetchQuery(page);
 
-    return await callback(page);
+    return await callback(fetchQuery);
   } finally {
     if (browser !== null) {
       await browser.close();
@@ -26,7 +29,7 @@ export const using = async <T>(callback: Callback<T>): Promise<T> => {
   }
 };
 
-const openCybozuSchedulePage = async (browser: Browser): Promise<Page> => {
+const openSchedulePage = async (browser: Browser): Promise<Page> => {
   const page = await browser.newPage();
 
   await page.authenticate(CYBOZU_BASIC_AUTH);
@@ -46,4 +49,26 @@ const openCybozuSchedulePage = async (browser: Browser): Promise<Page> => {
   await Promise.all([page.waitForNavigation(), page.goto(CYBOZU_BASE_URL + '?page=ScheduleUserMonth')]);
 
   return page;
+};
+
+export const createFetchQuery = (page: Page): EvaluateCybozuPage => {
+  return async () => {
+    return await page.evaluate(() => {
+      const result: EvaluateResult[] = [];
+
+      document.querySelectorAll('.eventLink').forEach((element) => {
+        const event: HTMLAnchorElement | null = element.querySelector('a.event');
+        if (!event) return;
+
+        const eventTime: HTMLSpanElement | null = element.querySelector('span.eventDateTime');
+        result.push({
+          title: event.title,
+          href: event.href,
+          eventTime: eventTime?.innerText,
+        });
+      });
+
+      return result;
+    });
+  };
 };

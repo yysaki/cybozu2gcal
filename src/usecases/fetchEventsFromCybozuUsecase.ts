@@ -1,15 +1,16 @@
 import 'source-map-support/register';
-import { Page } from 'puppeteer';
 
 import { buildDateTime, Event } from '../entity';
 
-interface QueryResult {
+export interface EvaluateResult {
   title: string;
   href: string;
   eventTime?: string;
 }
 
-const parse = ({ title, href, eventTime }: QueryResult): Event | undefined => {
+export type EvaluateCybozuPage = () => Promise<EvaluateResult[]>;
+
+const parse = ({ title, href, eventTime }: EvaluateResult): Event | undefined => {
   const regexp = /\Date=da\.([0-9]+)\.([0-9]+)\.([0-9]+)&BDate=da\.([0-9]+)\.([0-9]+)\.([0-9]+)&sEID=([0-9]+)/;
   const match = href.match(regexp);
   if (!match) return;
@@ -40,25 +41,9 @@ const parse = ({ title, href, eventTime }: QueryResult): Event | undefined => {
   return { title, eid, startedAt, endedAt };
 };
 
-export const fetchEventsFromCybozuUsecase = (schedulePage: Page) => {
+export const fetchEventsFromCybozuUsecase = (evaluate: EvaluateCybozuPage) => {
   return async (): Promise<Event[]> => {
-    const evaluated = await schedulePage.evaluate(() => {
-      const result: QueryResult[] = [];
-
-      document.querySelectorAll('.eventLink').forEach((element) => {
-        const event: HTMLAnchorElement | null = element.querySelector('a.event');
-        if (!event) return;
-
-        const eventTime: HTMLSpanElement | null = element.querySelector('span.eventDateTime');
-        result.push({
-          title: event.title,
-          href: event.href,
-          eventTime: eventTime?.innerText,
-        });
-      });
-
-      return result;
-    });
+    const evaluated = await evaluate();
 
     return evaluated.map(parse).filter<Event>((e): e is Event => !!e);
   };

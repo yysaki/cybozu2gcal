@@ -5,8 +5,8 @@ import { setupCalendar, using } from './apis';
 import { fetchEventsFromCybozuUsecase, syncToGoogleCalendarUsecase } from './usecases';
 
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
-  return await using<APIGatewayProxyResult>(async (page) => {
-    const fetch = fetchEventsFromCybozuUsecase(page);
+  return await using<APIGatewayProxyResult>(async (evaluate) => {
+    const fetch = fetchEventsFromCybozuUsecase(evaluate);
     const events = await fetch();
 
     const googleCalendar = setupCalendar();
