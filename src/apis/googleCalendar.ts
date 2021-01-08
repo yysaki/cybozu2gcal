@@ -3,6 +3,7 @@ import { google, calendar_v3 } from 'googleapis';
 
 import { GOOGLE_API_CLIENT_ID, GOOGLE_API_SECRET, GOOGLE_API_REFRESH_TOKEN, GOOGLE_CALENDAR_ID } from '../config';
 import { Event } from '../entity';
+import { dayjs } from '../lib';
 import { GoogleCalendarRepository } from '../usecases';
 
 export const authGoogleApi = (): GoogleCalendarRepository => {
@@ -20,8 +21,8 @@ const buildBody = (event: Event): calendar_v3.Schema$Event => {
   return {
     summary: event.title,
     description: event.id,
-    start: { dateTime: event.startedAt },
-    end: { dateTime: event.endedAt },
+    start: { dateTime: event.startedAt.format() },
+    end: { dateTime: event.endedAt.format() },
   };
 };
 
@@ -30,8 +31,8 @@ const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
     id: googleEvent.description || '',
     googleEventId: googleEvent.id || '',
     title: googleEvent.summary || '',
-    startedAt: googleEvent.start?.dateTime || '',
-    endedAt: googleEvent.end?.dateTime || '',
+    startedAt: dayjs(googleEvent.start?.dateTime || ''),
+    endedAt: dayjs(googleEvent.end?.dateTime || ''),
   };
 };
 

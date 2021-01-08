@@ -2,26 +2,12 @@ import 'source-map-support/register';
 
 import { GoogleCalendarRepository, syncToGoogleCalendarUsecase } from '/src/usecases/';
 import { Event } from '/src/entity';
+import { tz } from '/src/lib';
 
 const events: Event[] = [
-  {
-    id: '1234567',
-    title: 'event X',
-    startedAt: '2021-01-01T12:30:00+09:00',
-    endedAt: '2021-01-01T13:30:00+09:00',
-  },
-  {
-    id: '1234568',
-    title: 'event Y',
-    startedAt: '2021-01-02T12:30:00+09:00',
-    endedAt: '2021-01-02T13:30:00+09:00',
-  },
-  {
-    id: '1234569',
-    title: 'event Z',
-    startedAt: '2021-01-03T12:30:00+09:00',
-    endedAt: '2021-01-03T13:30:00+09:00',
-  },
+  { id: '1234567', title: 'event X', startedAt: tz('2021-01-01 12:30'), endedAt: tz('2021-01-01 13:30') },
+  { id: '1234568', title: 'event Y', startedAt: tz('2021-01-02 12:30'), endedAt: tz('2021-01-02 13:30') },
+  { id: '1234569', title: 'event Z', startedAt: tz('2021-01-03 12:30'), endedAt: tz('2021-01-03 13:30') },
 ];
 const repository: GoogleCalendarRepository = {
   list: jest.fn(async (_timeMin, _timeMax) => [events[0], events[1]]),

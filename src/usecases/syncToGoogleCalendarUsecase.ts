@@ -19,7 +19,7 @@ const serialize = async (promises: Promise<void>[]) => {
 export const syncToGoogleCalendarUsecase = (repository: GoogleCalendarRepository) => {
   return async (events: Event[]): Promise<{ inserted: Event[]; deleted: Event[] }> => {
     const { timeMin, timeMax } = minMaxDateFrom(events);
-    const existEvents = await repository.list(timeMin.toISOString(), timeMax.toISOString());
+    const existEvents = await repository.list(timeMin.format(), timeMax.format());
 
     const insertTargets = events.filter((e1) => existEvents.every((e2) => !isUnique(e1, e2)));
     const deleteTargets = existEvents.filter((e1) => events.every((e2) => !isUnique(e1, e2)));
