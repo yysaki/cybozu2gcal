@@ -1,5 +1,7 @@
 import 'source-map-support/register';
 
+import { dayjs } from './lib';
+
 interface BuildDateTimeParam {
   year: string;
   month: string;
@@ -9,13 +11,12 @@ interface BuildDateTimeParam {
 }
 
 export const buildDateTime = ({ year, month, day, ...rest }: BuildDateTimeParam): string => {
-  const pad = (num: string) => ('00' + num).slice(-2);
-
   // 24:00 を 23:59 に読み替え
   const hour = rest.hour === '24' ? '23' : rest.hour;
   const minute = rest.hour === '24' ? '59' : rest.minute;
+  const tz = dayjs.tz(`${year}-${month}-${day} ${hour}:${minute}`, 'Asia/Tokyo');
 
-  return `${year}-${pad(month)}-${pad(day)}T${pad(hour)}:${pad(minute)}:00+09:00`; // Asia/Tokyo
+  return tz.format();
 };
 
 export interface Event {

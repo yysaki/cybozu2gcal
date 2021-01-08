@@ -1,5 +1,7 @@
 import 'source-map-support/register';
 
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
 import { buildDateTime, Event } from '../entity';
 
 export interface EvaluateResult {
@@ -9,6 +11,8 @@ export interface EvaluateResult {
 }
 
 export type EvaluateCybozuPage = () => Promise<EvaluateResult[]>;
+
+dayjs.extend(timezone);
 
 const parse = ({ title, href, eventTime }: EvaluateResult): Event | undefined => {
   const regexp = /\Date=da\.([0-9]+)\.([0-9]+)\.([0-9]+)&BDate=da\.([0-9]+)\.([0-9]+)\.([0-9]+)&sEID=([0-9]+)/;
