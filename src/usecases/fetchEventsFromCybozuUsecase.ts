@@ -38,7 +38,9 @@ const parse = ({ title, href, eventTime }: EvaluateResult): Event | undefined =>
   const startedAt = buildDateTime({ ...startedDate, ...startedTime });
   const endedAt = buildDateTime({ ...endedDate, ...endedTime });
 
-  return { id, title, startedAt, endedAt };
+  const type = 'dateTime';
+
+  return { id, type, title, startedAt, endedAt };
 };
 
 export const fetchEventsFromCybozuUsecase = (evaluate: EvaluateCybozuPage) => {

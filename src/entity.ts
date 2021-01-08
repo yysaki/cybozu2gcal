@@ -20,6 +20,7 @@ export const buildDateTime = ({ year, month, day, ...rest }: BuildDateTimeParam)
 
 export interface Event {
   id: string;
+  type: 'date' | 'dateTime';
   googleEventId?: string;
   title: string;
   startedAt: Dayjs;

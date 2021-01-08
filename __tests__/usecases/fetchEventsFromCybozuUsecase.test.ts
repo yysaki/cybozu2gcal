@@ -15,7 +15,7 @@ const evaluate: EvaluateCybozuPage = jest.fn(async () => [result]);
 describe('fetchEventsFromCybozuUsecase', () => {
   const subject = fetchEventsFromCybozuUsecase(evaluate);
 
-  const expected = { id, title, startedAt: tz('2021-01-01 12:30'), endedAt: tz('2021-01-01 13:30') };
+  const expected = { id, type: 'dateTime', title, startedAt: tz('2021-01-01 12:30'), endedAt: tz('2021-01-01 13:30') };
 
   it('returns Event[]', async () => {
     const events = await subject();
