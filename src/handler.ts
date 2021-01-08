@@ -13,9 +13,9 @@ export const cybozu2gcal: APIGatewayProxyHandler = async () => {
       const googleCalendarRepository = authGoogleApi();
 
       const sync = syncToGoogleCalendarUsecase(googleCalendarRepository);
-      const body = await sync(events);
+      const { inserted, deleted } = await sync(events);
 
-      return { statusCode: 200, body };
+      return { statusCode: 200, body: `inserted: ${inserted.length}, deleted: ${deleted.length}` };
     });
   } catch (error) {
     console.error(error);

@@ -1,3 +1,5 @@
+import 'source-map-support/register';
+
 import { EvaluateCybozuPage, fetchEventsFromCybozuUsecase } from '/src/usecases/';
 
 const result = {
