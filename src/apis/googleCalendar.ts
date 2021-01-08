@@ -17,23 +17,34 @@ export const authGoogleApi = (): GoogleCalendarRepository => {
   return new Repository(calendar);
 };
 
-const buildBody = (event: Event): calendar_v3.Schema$Event => {
-  return {
-    summary: event.title,
-    description: event.id,
-    start: { dateTime: event.startedAt.format() },
-    end: { dateTime: event.endedAt.format() },
-  };
+const buildBody = ({ id, type, title, startedAt, endedAt }: Event): calendar_v3.Schema$Event => {
+  const summary = title;
+  const description = id;
+  if (type === 'dateTime') {
+    const start = { dateTime: startedAt.format() };
+    const end = { dateTime: endedAt.format() };
+    return { summary, description, start, end };
+  } else {
+    const start = { date: startedAt.format('YYYY-MM-DD') };
+    const end = { date: endedAt.format('YYYY-MM-DD') };
+    return { summary, description, start, end };
+  }
 };
 
-const eventFrom = (googleEvent: calendar_v3.Schema$Event): Event => {
-  return {
-    id: googleEvent.description || '',
-    googleEventId: googleEvent.id || '',
-    title: googleEvent.summary || '',
-    startedAt: dayjs(googleEvent.start?.dateTime || ''),
-    endedAt: dayjs(googleEvent.end?.dateTime || ''),
-  };
+const eventFrom = ({ start, end, ...rest }: calendar_v3.Schema$Event): Event => {
+  const id = rest.description || '';
+  const googleEventId = rest.id || '';
+  const title = rest.summary || '';
+
+  if (start?.dateTime && end?.dateTime) {
+    const startedAt = dayjs(start.dateTime);
+    const endedAt = dayjs(end.dateTime);
+    return { id, type: 'dateTime', googleEventId, title, startedAt, endedAt };
+  } else {
+    const startedAt = dayjs(start?.date || '');
+    const endedAt = dayjs(end?.date || '');
+    return { id, type: 'date', googleEventId, title, startedAt, endedAt };
+  }
 };
 
 class Repository implements GoogleCalendarRepository {

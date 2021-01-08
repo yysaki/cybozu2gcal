@@ -1,6 +1,7 @@
 import 'source-map-support/register';
 
-import { buildDateTime, Event } from '../entity';
+import { Event } from '../entity';
+import { tz } from '../lib';
 
 export interface EvaluateResult {
   title: string;
@@ -10,35 +11,42 @@ export interface EvaluateResult {
 
 export type EvaluateCybozuPage = () => Promise<EvaluateResult[]>;
 
+const buildDateTime = ({ date, ...rest }: { date: string; hour: string; minute: string }) => {
+  // 24:00 を 23:59 に読み替え
+  const hour = rest.hour === '24' ? '23' : rest.hour;
+  const minute = rest.hour === '24' ? '59' : rest.minute;
+
+  return tz(`${date} ${hour}:${minute}`);
+};
+
 const parse = ({ title, href, eventTime }: EvaluateResult): Event | undefined => {
   const regexp = /\Date=da\.([0-9]+)\.([0-9]+)\.([0-9]+)&BDate=da\.([0-9]+)\.([0-9]+)\.([0-9]+)&sEID=([0-9]+)/;
   const match = href.match(regexp);
   if (!match) return;
 
   const id = match[7];
-
-  const startedDate = { year: match[1], month: match[2], day: match[3] };
-  const endedDate = { year: match[4], month: match[5], day: match[6] };
-  let startedTime = { hour: '0', minute: '0' };
-  let endedTime = { hour: '23', minute: '59' };
+  const date = `${match[1]}-${match[2]}-${match[3]}`;
 
   if (eventTime) {
     const timeSpanMatch = eventTime.match(/([0-9]+):([0-9]+)-([0-9]+):([0-9]+)/);
     const timeMatch = eventTime.match(/([0-9]+):([0-9]+)/);
+    const type: Event['type'] = 'dateTime';
 
     if (timeSpanMatch) {
-      startedTime = { hour: timeSpanMatch[1], minute: timeSpanMatch[2] };
-      endedTime = { hour: timeSpanMatch[3], minute: timeSpanMatch[4] };
+      const startedAt = buildDateTime({ date, hour: timeSpanMatch[1], minute: timeSpanMatch[2] });
+      const endedAt = buildDateTime({ date, hour: timeSpanMatch[3], minute: timeSpanMatch[4] });
+
+      return { id, type, title, startedAt, endedAt };
     } else if (timeMatch) {
-      startedTime = { hour: timeMatch[1], minute: timeMatch[2] };
-      endedTime = { hour: timeMatch[1], minute: timeMatch[2] };
+      const dateTime = buildDateTime({ date, hour: timeMatch[1], minute: timeMatch[2] });
+
+      return { id, type, title, startedAt: dateTime, endedAt: dateTime };
     }
   }
 
-  const startedAt = buildDateTime({ ...startedDate, ...startedTime });
-  const endedAt = buildDateTime({ ...endedDate, ...endedTime });
-
-  const type = 'dateTime';
+  const type: Event['type'] = 'date';
+  const startedAt = tz(date);
+  const endedAt = startedAt.add(1, 'day');
 
   return { id, type, title, startedAt, endedAt };
 };
