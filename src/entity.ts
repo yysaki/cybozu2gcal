@@ -12,7 +12,12 @@ export interface Event {
 }
 
 export const isUnique = (lhs: Event, rhs: Event): boolean => {
-  return lhs.type === rhs.type && lhs.id === rhs.id && lhs.startedAt === rhs.startedAt && lhs.endedAt === rhs.endedAt;
+  return (
+    lhs.type === rhs.type &&
+    lhs.id === rhs.id &&
+    lhs.startedAt.valueOf() === rhs.startedAt.valueOf() &&
+    lhs.endedAt.valueOf() === rhs.endedAt.valueOf()
+  );
 };
 
 export const minMaxDateFrom = (events: Event[]): { timeMin: Dayjs; timeMax: Dayjs } => {

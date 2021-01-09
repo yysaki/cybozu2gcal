@@ -9,10 +9,10 @@ export interface GoogleCalendarRepository {
 }
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-const serialize = async (promises: Promise<void>[]) => {
+const serialize = async (promises: (() => Promise<void>)[]) => {
   for (const promise of promises) {
-    await wait(100);
-    await promise;
+    await wait(100); // 100 milli second.
+    await promise();
   }
 };
 
@@ -21,11 +21,11 @@ export const syncToGoogleCalendarUsecase = (repository: GoogleCalendarRepository
     const { timeMin, timeMax } = minMaxDateFrom(events);
     const existEvents = await repository.list(timeMin.format(), timeMax.format());
 
-    const insertTargets = events.filter((e1) => existEvents.every((e2) => !isUnique(e1, e2)));
     const deleteTargets = existEvents.filter((e1) => events.every((e2) => !isUnique(e1, e2)));
+    const insertTargets = events.filter((e1) => existEvents.every((e2) => !isUnique(e1, e2)));
 
-    await serialize(insertTargets.map(async (event) => await repository.insert(event)));
-    await serialize(deleteTargets.map(async (event) => await repository.delete(event)));
+    await serialize(deleteTargets.map((event) => () => repository.delete(event)));
+    await serialize(insertTargets.map((event) => () => repository.insert(event)));
 
     return { inserted: insertTargets, deleted: deleteTargets };
   };
