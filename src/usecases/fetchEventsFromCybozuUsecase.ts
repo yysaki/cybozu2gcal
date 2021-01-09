@@ -9,7 +9,9 @@ export interface EvaluateResult {
   eventTime?: string;
 }
 
-export type EvaluateCybozuPage = () => Promise<EvaluateResult[]>;
+export interface CybozuRepository {
+  list(): Promise<EvaluateResult[]>;
+}
 
 const buildDateTime = ({ date, ...rest }: { date: string; hour: string; minute: string }) => {
   // 24:00 を 23:59 に読み替え
@@ -51,9 +53,9 @@ const parse = ({ title, href, eventTime }: EvaluateResult): Event | undefined =>
   return { id, type, title, startedAt, endedAt };
 };
 
-export const fetchEventsFromCybozuUsecase = (evaluate: EvaluateCybozuPage) => {
+export const fetchEventsFromCybozuUsecase = (repository: CybozuRepository) => {
   return async (): Promise<Event[]> => {
-    const evaluated = await evaluate();
+    const evaluated = await repository.list();
 
     return evaluated.map(parse).filter<Event>((e): e is Event => !!e);
   };

@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 
-import { EvaluateCybozuPage, fetchEventsFromCybozuUsecase } from '/src/usecases/';
+import { CybozuRepository, fetchEventsFromCybozuUsecase } from '/src/usecases/';
 import { tz } from '/src/lib';
 
 const results = [
@@ -14,10 +14,12 @@ const results = [
     href: `ag.cgi?page=ScheduleView&UID=1234&GID=1234&Date=da.2021.1.2&BDate=da.2021.1.2&sEID=1234568&CP=sg`,
   },
 ];
-const evaluate: EvaluateCybozuPage = jest.fn(async () => results);
+const repository: CybozuRepository = {
+  list: jest.fn(async () => results),
+};
 
 describe('fetchEventsFromCybozuUsecase', () => {
-  const subject = fetchEventsFromCybozuUsecase(evaluate);
+  const subject = fetchEventsFromCybozuUsecase(repository);
 
   const expected = [
     {
