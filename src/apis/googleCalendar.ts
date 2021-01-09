@@ -10,10 +10,10 @@ export const authGoogleApi = (): GoogleCalendarRepository => {
   /* const SCOPES = ['https://www.googleapis.com/auth/calendar.events']; */
   const REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob';
 
-  const oauth2client = new google.auth.OAuth2(GOOGLE_API_CLIENT_ID, GOOGLE_API_SECRET, REDIRECT_URI);
-  oauth2client.setCredentials({ refresh_token: GOOGLE_API_REFRESH_TOKEN });
+  const oAuth2Client = new google.auth.OAuth2(GOOGLE_API_CLIENT_ID, GOOGLE_API_SECRET, REDIRECT_URI);
+  oAuth2Client.setCredentials({ refresh_token: GOOGLE_API_REFRESH_TOKEN });
 
-  const calendar = google.calendar({ version: 'v3', auth: oauth2client });
+  const calendar = google.calendar({ version: 'v3', auth: oAuth2Client });
   return new Repository(calendar);
 };
 
