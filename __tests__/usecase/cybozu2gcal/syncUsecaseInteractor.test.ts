@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 
-import { GoogleCalendarRepository, syncToGoogleCalendarUsecase } from '/src/usecases/';
+import { CybozuRepository, GoogleCalendarRepository, syncUsecaseInteractor } from '/src/usecase/cybozu2gcal';
 import { Event } from '/src/entity';
 import { tz } from '/src/lib';
 
@@ -27,19 +27,21 @@ const events: Event[] = [
     endedAt: tz('2021-01-03 13:30'),
   },
 ];
-const repository: GoogleCalendarRepository = {
+const googleRepository: GoogleCalendarRepository = {
   list: jest.fn(async (_timeMin, _timeMax) => [events[0], events[1]]),
   insert: jest.fn(async (_event) => {}),
   delete: jest.fn(async (_event) => {}),
 };
 
-describe('syncToGoogleCalendarUsecase', () => {
-  const subject = syncToGoogleCalendarUsecase(repository);
+const cybozuRepository: CybozuRepository = {
+  list: jest.fn(async () => [events[1], events[2]]),
+};
 
-  const param = [events[1], events[2]];
+describe('syncUsecaseInteractor', () => {
+  const subject = syncUsecaseInteractor(cybozuRepository, googleRepository);
 
   it('returns inserted and deleted events', async () => {
-    const result = await subject(param);
+    const result = await subject();
 
     expect(result).toEqual(expect.objectContaining({ inserted: [events[2]], deleted: [events[0]] }));
   });
