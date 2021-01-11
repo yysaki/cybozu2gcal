@@ -1,6 +1,4 @@
-import 'source-map-support/register';
-
-import { dayjs, Dayjs } from './lib';
+import { dayjs, Dayjs } from '../lib';
 
 export interface Event {
   id: string;

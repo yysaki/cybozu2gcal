@@ -1,5 +1,3 @@
-import 'source-map-support/register';
-
 import { CybozuRepository, GoogleCalendarRepository, syncUsecaseInteractor } from '/src/usecase/cybozu2gcal';
 import { Event } from '/src/entity';
 import { tz } from '/src/lib';

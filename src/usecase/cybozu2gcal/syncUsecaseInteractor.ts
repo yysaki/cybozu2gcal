@@ -1,16 +1,5 @@
-import 'source-map-support/register';
-
-import { Event, isUnique, minMaxDateFrom } from '../../entity';
-
-export interface CybozuRepository {
-  list(): Promise<Event[]>;
-}
-
-export interface GoogleCalendarRepository {
-  list(timeMin: string, timeMax: string): Promise<Event[]>;
-  insert(event: Event): Promise<void>;
-  delete(event: Event): Promise<void>;
-}
+import { isUnique, minMaxDateFrom } from '../../entity';
+import { CybozuRepository, GoogleCalendarRepository, SyncUsecase } from './';
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const serialize = async (promises: (() => Promise<void>)[]) => {
@@ -19,11 +8,6 @@ const serialize = async (promises: (() => Promise<void>)[]) => {
     await promise();
   }
 };
-
-export type SyncUsecase = (
-  cybozuRepository: CybozuRepository,
-  googleRepository: GoogleCalendarRepository,
-) => () => Promise<{ inserted: Event[]; deleted: Event[] }>;
 
 export const syncUsecaseInteractor: SyncUsecase = (
   cybozuRepository: CybozuRepository,
