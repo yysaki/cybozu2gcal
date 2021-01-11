@@ -10,3 +10,5 @@ export const GOOGLE_API_CLIENT_ID = '';
 export const GOOGLE_API_SECRET = '';
 export const GOOGLE_API_REFRESH_TOKEN = '';
 export const GOOGLE_CALENDAR_ID = '';
+
+export const SLACK_WEBHOOK_URL = '';
