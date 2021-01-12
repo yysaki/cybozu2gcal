@@ -1,6 +1,6 @@
 import { calendar_v3 } from 'googleapis';
 import { Event } from '../../entity';
-import { dayjs } from '../../lib';
+import { dayjs, tz } from '../../lib';
 import { GoogleCalendarRepository } from '../../usecase/cybozu2gcal';
 import { CalendarDriver } from './';
 
@@ -17,8 +17,8 @@ const entityEventFrom = ({ start, end, ...rest }: calendar_v3.Schema$Event): Eve
     const endedAt = dayjs(end.dateTime);
     return { id, type: 'dateTime', googleEventId, title, startedAt, endedAt };
   } else {
-    const startedAt = dayjs(start?.date || '');
-    const endedAt = dayjs(end?.date || '');
+    const startedAt = tz(start?.date || '');
+    const endedAt = tz(end?.date || '');
     return { id, type: 'date', googleEventId, title, startedAt, endedAt };
   }
 };

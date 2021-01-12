@@ -20,6 +20,7 @@ export const syncUsecaseInteractor: SyncUsecase = (
 
     const deleteTargets = googleEvents.filter((e1) => cybozuEvents.every((e2) => !isUnique(e1, e2)));
     const insertTargets = cybozuEvents.filter((e1) => googleEvents.every((e2) => !isUnique(e1, e2)));
+    console.log(JSON.stringify({ cybozuEvents, googleEvents, insertTargets, deleteTargets }));
 
     await serialize(deleteTargets.map((event) => () => googleRepository.delete(event)));
     await serialize(insertTargets.map((event) => () => googleRepository.insert(event)));
