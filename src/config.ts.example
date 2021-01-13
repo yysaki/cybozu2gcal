@@ -12,3 +12,4 @@ export const GOOGLE_API_REFRESH_TOKEN = '';
 export const GOOGLE_CALENDAR_ID = '';
 
 export const SLACK_WEBHOOK_URL = '';
+export const S3_BUCKET_NAME = '';

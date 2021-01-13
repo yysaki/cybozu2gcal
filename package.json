@@ -37,6 +37,7 @@
     "prettier": "^2.2.1",
     "puppeteer": "^5.5.0",
     "serverless": "^2.16.1",
+    "serverless-layers": "^2.3.3",
     "serverless-webpack": "^5.2.0",
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.10",

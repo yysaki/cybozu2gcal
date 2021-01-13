@@ -1,16 +1,22 @@
 import type { AWS } from '@serverless/typescript';
+import { S3_BUCKET_NAME } from './src/config';
 
 const serverlessConfiguration: AWS = {
   service: 'cybozu2gcal',
   frameworkVersion: '2',
   custom: {
+    'serverless-layers': {
+      dependenciesPath: 'package.json',
+      packageManager: 'yarn',
+      layersDeploymentBucket: S3_BUCKET_NAME,
+    },
     webpack: {
       webpackConfig: './webpack.config.js',
-      includeModules: true,
+      includeModules: false,
     },
   },
   // Add the serverless-webpack plugin
-  plugins: ['serverless-webpack'],
+  plugins: ['serverless-webpack', 'serverless-layers'],
   provider: {
     name: 'aws',
     runtime: 'nodejs12.x',
