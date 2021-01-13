@@ -27,8 +27,8 @@ const events: Event[] = [
 ];
 const googleRepository: GoogleCalendarRepository = {
   list: jest.fn(async (_timeMin, _timeMax) => [events[0], events[1]]),
-  insert: jest.fn(async (_event) => {}),
-  delete: jest.fn(async (_event) => {}),
+  addEvents: jest.fn(async (_events) => {}),
+  deleteEvents: jest.fn(async (_events) => {}),
 };
 
 const cybozuRepository: CybozuRepository = {

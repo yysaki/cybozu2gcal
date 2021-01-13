@@ -39,6 +39,14 @@ UID:${id}`;
   }
 };
 
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const serialize = async (promises: (() => Promise<void>)[]) => {
+  for (const promise of promises) {
+    await wait(100); // 100 milli second.
+    await promise();
+  }
+};
+
 export const createGoogleCalendarRepository = (calendarDriver: CalendarDriver): GoogleCalendarRepository => {
   const driver = calendarDriver();
   return {
@@ -47,11 +55,15 @@ export const createGoogleCalendarRepository = (calendarDriver: CalendarDriver): 
 
       return events.map(entityEventFrom).filter<Event>((e): e is Event => !!e);
     },
-    insert: async (event: Event) => {
-      await driver.insert(googleCalendarEventFrom(event));
+    addEvents: async (events: Event[]) => {
+      const promises = events.map((event) => () => driver.insert(googleCalendarEventFrom(event)));
+
+      await serialize(promises);
     },
-    delete: async ({ googleEventId }: Event) => {
-      await driver.delete(googleEventId || '');
+    deleteEvents: async (events: Event[]) => {
+      const promises = events.map(({ googleEventId }) => () => driver.delete(googleEventId || ''));
+
+      await serialize(promises);
     },
   };
 };
