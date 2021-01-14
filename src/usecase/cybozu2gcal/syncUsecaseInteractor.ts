@@ -1,9 +1,9 @@
 import { isUnique, minMaxDateFrom } from '../../entity';
-import { CybozuRepository, GoogleCalendarRepository, SyncUsecase } from './';
+import { ICybozuRepository, IGoogleCalendarRepository, SyncUsecase } from './';
 
 export const syncUsecaseInteractor: SyncUsecase = (
-  cybozuRepository: CybozuRepository,
-  googleRepository: GoogleCalendarRepository,
+  cybozuRepository: ICybozuRepository,
+  googleRepository: IGoogleCalendarRepository,
 ) => {
   return async () => {
     const cybozuEvents = await cybozuRepository.list();

@@ -1,4 +1,4 @@
-import { CybozuRepository, GoogleCalendarRepository, syncUsecaseInteractor } from '/src/usecase/cybozu2gcal';
+import { ICybozuRepository, IGoogleCalendarRepository, syncUsecaseInteractor } from '/src/usecase/cybozu2gcal';
 import { Event } from '/src/entity';
 import { tz } from '/src/lib';
 
@@ -25,13 +25,13 @@ const events: Event[] = [
     endedAt: tz('2021-01-03 13:30'),
   },
 ];
-const googleRepository: GoogleCalendarRepository = {
+const googleRepository: IGoogleCalendarRepository = {
   list: jest.fn(async (_timeMin, _timeMax) => [events[0], events[1]]),
   addEvents: jest.fn(async (_events) => {}),
   deleteEvents: jest.fn(async (_events) => {}),
 };
 
-const cybozuRepository: CybozuRepository = {
+const cybozuRepository: ICybozuRepository = {
   list: jest.fn(async () => [events[1], events[2]]),
 };
 

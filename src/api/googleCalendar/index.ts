@@ -1,2 +1,2 @@
-export * from './createGoogleCalendarRepository';
+export * from './googleCalendarRepository';
 export * from './calendarDriver';

@@ -1,5 +1,5 @@
 import { Event } from '../../entity';
 
-export interface CybozuRepository {
+export interface ICybozuRepository {
   list(): Promise<Event[]>;
 }

@@ -1,6 +1,6 @@
-import { CybozuRepository, GoogleCalendarRepository, SyncUsecaseOutputData } from './';
+import { ICybozuRepository, IGoogleCalendarRepository, SyncUsecaseOutputData } from './';
 
 export type SyncUsecase = (
-  cybozuRepository: CybozuRepository,
-  googleRepository: GoogleCalendarRepository,
+  cybozuRepository: ICybozuRepository,
+  googleRepository: IGoogleCalendarRepository,
 ) => () => Promise<SyncUsecaseOutputData>;
