@@ -1,3 +1,3 @@
 export * from './cybozuRepository';
 export * from './evaluateOutputData';
-export * from './evaluateWebPage';
+export * from './webPageDriver';

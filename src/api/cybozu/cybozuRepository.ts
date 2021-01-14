@@ -1,17 +1,17 @@
 import { Event } from '../../entity';
 import { tz } from '../../lib';
 import { ICybozuRepository } from '../../usecase/cybozu2gcal';
-import { EvaluateWebPage, EvaluateOutputData } from './';
+import { IWebPageDriver, EvaluateOutputData } from './';
 
 export class CybozuRepository implements ICybozuRepository {
-  private evaluate: EvaluateWebPage;
+  private driver: IWebPageDriver;
 
-  constructor(evaluateWebPage: EvaluateWebPage) {
-    this.evaluate = evaluateWebPage;
+  constructor(webPageDriver: IWebPageDriver) {
+    this.driver = webPageDriver;
   }
 
   async list(): Promise<Event[]> {
-    const evaluated = await this.evaluate();
+    const evaluated = await this.driver.evaluate();
 
     return evaluated.map((e) => this.eventFrom(e)).filter<Event>((e): e is Event => !!e);
   }
