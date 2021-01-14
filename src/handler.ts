@@ -1,11 +1,13 @@
 import { APIGatewayProxyHandler } from 'aws-lambda'; // eslint-disable-line import/no-unresolved
 import { evaluateWebPage, CybozuRepository } from './api/cybozu';
-import { calendarDriver, GoogleCalendarRepository } from './api/googleCalendar';
+import { CalendarDriver, GoogleCalendarRepository } from './api/googleCalendar';
 import { slackNotify } from './lib';
 import { syncUsecaseInteractor } from './usecase/cybozu2gcal';
 
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
   try {
+    const calendarDriver = new CalendarDriver();
+
     const cybozuRepository = new CybozuRepository(evaluateWebPage);
     const googleCalendarRepository = new GoogleCalendarRepository(calendarDriver);
 

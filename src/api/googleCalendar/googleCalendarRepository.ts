@@ -2,13 +2,13 @@ import { calendar_v3 } from 'googleapis';
 import { Event } from '../../entity';
 import { dayjs, tz } from '../../lib';
 import { IGoogleCalendarRepository } from '../../usecase/cybozu2gcal';
-import { CalendarDriver } from './';
+import { ICalendarDriver } from './';
 
 export class GoogleCalendarRepository implements IGoogleCalendarRepository {
-  private driver: ReturnType<CalendarDriver>;
+  private driver: ICalendarDriver;
 
-  constructor(calendarDriver: CalendarDriver) {
-    this.driver = calendarDriver();
+  constructor(calendarDriver: ICalendarDriver) {
+    this.driver = calendarDriver;
   }
 
   async list(timeMin: string, timeMax: string): Promise<Event[]> {
