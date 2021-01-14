@@ -12,11 +12,10 @@ export const syncUsecaseInteractor: SyncUsecase = (
 
     const deleteTargets = googleEvents.filter((e1) => cybozuEvents.every((e2) => !isUnique(e1, e2)));
     const addTargets = cybozuEvents.filter((e1) => googleEvents.every((e2) => !isUnique(e1, e2)));
-    console.log(JSON.stringify({ cybozuEvents, googleEvents, addTargets, deleteTargets }));
 
     await googleRepository.deleteEvents(deleteTargets);
     await googleRepository.addEvents(addTargets);
 
-    return { inserted: addTargets, deleted: deleteTargets };
+    return { added: addTargets, deleted: deleteTargets };
   };
 };

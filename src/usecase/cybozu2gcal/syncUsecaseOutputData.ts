@@ -1,6 +1,6 @@
 import { Event } from '../../entity';
 
 export interface SyncUsecaseOutputData {
-  inserted: Event[];
+  added: Event[];
   deleted: Event[];
 }

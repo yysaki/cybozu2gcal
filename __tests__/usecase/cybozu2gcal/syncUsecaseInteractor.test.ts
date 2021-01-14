@@ -38,9 +38,9 @@ const cybozuRepository: ICybozuRepository = {
 describe('syncUsecaseInteractor', () => {
   const subject = syncUsecaseInteractor(cybozuRepository, googleRepository);
 
-  it('returns inserted and deleted events', async () => {
+  it('returns added and deleted events', async () => {
     const result = await subject();
 
-    expect(result).toEqual(expect.objectContaining({ inserted: [events[2]], deleted: [events[0]] }));
+    expect(result).toEqual(expect.objectContaining({ added: [events[2]], deleted: [events[0]] }));
   });
 });
