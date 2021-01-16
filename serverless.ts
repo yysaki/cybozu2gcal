@@ -11,11 +11,10 @@ const serverlessConfiguration: AWS = {
       layersDeploymentBucket: S3_BUCKET_NAME,
     },
     webpack: {
-      webpackConfig: './webpack.config.js',
-      includeModules: false,
+      packager: 'yarn',
+      webpackConfig: './webpack.config.ts',
     },
   },
-  // Add the serverless-webpack plugin
   plugins: ['serverless-webpack', 'serverless-layers'],
   provider: {
     name: 'aws',

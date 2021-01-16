@@ -11,6 +11,5 @@
     "strict": true,
     "esModuleInterop": true
   },
-  "include": ["./**/*.ts"],
-  "exclude": ["node_modules/**/*", ".serverless/**/*", ".webpack/**/*", "_warmup/**/*", ".vscode/**/*"]
+  "include": ["src"]
 }
