@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda'; // eslint-disable-line import/no-unresolved
 import { WebPageDriver, CybozuRepository } from './api/cybozu';
 import { CalendarDriver, GoogleCalendarRepository } from './api/googleCalendar';
-import { slackNotify } from './lib';
+import { SlackRepository } from './api/slack';
 import { syncUsecaseInteractor } from './usecase/cybozu2gcal';
 
 export const cybozu2gcal: APIGatewayProxyHandler = async () => {
@@ -12,8 +12,11 @@ export const cybozu2gcal: APIGatewayProxyHandler = async () => {
     const calendarDriver = new CalendarDriver();
     const googleCalendarRepository = new GoogleCalendarRepository(calendarDriver);
 
-    const sync = syncUsecaseInteractor(cybozuRepository, googleCalendarRepository);
+    const slackRepository = SlackRepository();
+
+    const sync = syncUsecaseInteractor(cybozuRepository, googleCalendarRepository, slackRepository);
     const { added, deleted } = await sync();
+
     const body = `added: ${added.length}, deleted: ${deleted.length}`;
     console.log(JSON.stringify({ added, deleted }));
 
@@ -21,7 +24,6 @@ export const cybozu2gcal: APIGatewayProxyHandler = async () => {
   } catch (error) {
     console.error(error);
 
-    await slackNotify({ status: 'warning', message: error?.message || 'Unknown error was thrown.' });
     return { statusCode: 500, body: JSON.stringify(error) };
   }
 };

@@ -1,4 +1,9 @@
-import { ICybozuRepository, IGoogleCalendarRepository, syncUsecaseInteractor } from '/src/usecase/cybozu2gcal';
+import {
+  ICybozuRepository,
+  IGoogleCalendarRepository,
+  ISlackRepository,
+  syncUsecaseInteractor,
+} from '/src/usecase/cybozu2gcal';
 import { Event } from '/src/entity';
 import { tz } from '/src/lib';
 
@@ -35,8 +40,12 @@ const cybozuRepository: ICybozuRepository = {
   list: jest.fn(async () => [events[1], events[2]]),
 };
 
+const slackRepository: ISlackRepository = {
+  notify: jest.fn(async (_params) => {}),
+};
+
 describe('syncUsecaseInteractor', () => {
-  const subject = syncUsecaseInteractor(cybozuRepository, googleRepository);
+  const subject = syncUsecaseInteractor(cybozuRepository, googleRepository, slackRepository);
 
   it('returns added and deleted events', async () => {
     const result = await subject();
