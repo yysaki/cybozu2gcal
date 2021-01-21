@@ -15,10 +15,8 @@ export const cybozu2gcal: APIGatewayProxyHandler = async () => {
     const sync = syncUsecaseInteractor(cybozuRepository, googleCalendarRepository);
     const { added, deleted } = await sync();
     const body = `added: ${added.length}, deleted: ${deleted.length}`;
-
     console.log(JSON.stringify({ added, deleted }));
 
-    await slackNotify({ status: 'good', message: body });
     return { statusCode: 200, body };
   } catch (error) {
     console.error(error);
