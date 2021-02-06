@@ -9,10 +9,11 @@ export interface Event {
   endedAt: Dayjs;
 }
 
-export const isUnique = (lhs: Event, rhs: Event): boolean => {
+export const equals = (lhs: Event, rhs: Event): boolean => {
   return (
-    lhs.type === rhs.type &&
     lhs.id === rhs.id &&
+    lhs.type === rhs.type &&
+    lhs.title === rhs.title &&
     lhs.startedAt.valueOf() === rhs.startedAt.valueOf() &&
     lhs.endedAt.valueOf() === rhs.endedAt.valueOf()
   );
