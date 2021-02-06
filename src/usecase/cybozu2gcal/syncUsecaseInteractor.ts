@@ -16,7 +16,7 @@ export const syncUsecaseInteractor: SyncUsecase = (cybozuRepository, googleRepos
 
       return { added: addTargets, deleted: deleteTargets };
     } catch (error) {
-      notify({ status: 'warning', message: error?.message || 'Unknown error was thrown.' });
+      await notify({ status: 'warning', message: error?.message || 'Unknown error was thrown.' });
 
       throw error;
     }
