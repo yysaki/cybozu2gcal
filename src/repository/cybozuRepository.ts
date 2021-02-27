@@ -1,12 +1,12 @@
-import { Event } from '../../entity';
-import { tz } from '../../lib';
-import { ICybozuRepository } from '../../usecase/cybozu2gcal';
-import { IWebPageDriver, EvaluateOutputData } from './';
+import { Event } from '../entity';
+import { IWebDriver, EvaluateOutputData } from '../infra';
+import { tz } from '../lib';
+import { ICybozuRepository } from '../usecase/cybozu2gcal';
 
 export class CybozuRepository implements ICybozuRepository {
-  private driver: IWebPageDriver;
+  private driver: IWebDriver;
 
-  constructor(webPageDriver: IWebPageDriver) {
+  constructor(webPageDriver: IWebDriver) {
     this.driver = webPageDriver;
   }
 

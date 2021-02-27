@@ -1,8 +1,8 @@
 import { calendar_v3 } from 'googleapis';
-import { Event } from '../../entity';
-import { dayjs, tz } from '../../lib';
-import { IGoogleCalendarRepository } from '../../usecase/cybozu2gcal';
-import { ICalendarDriver } from './';
+import { Event } from '../entity';
+import { ICalendarDriver } from '../infra';
+import { dayjs, tz } from '../lib';
+import { IGoogleCalendarRepository } from '../usecase/cybozu2gcal';
 
 export class GoogleCalendarRepository implements IGoogleCalendarRepository {
   private driver: ICalendarDriver;

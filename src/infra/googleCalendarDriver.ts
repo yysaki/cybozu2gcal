@@ -1,5 +1,5 @@
 import { google, calendar_v3 } from 'googleapis';
-import { GOOGLE_API_CLIENT_ID, GOOGLE_API_SECRET, GOOGLE_API_REFRESH_TOKEN, GOOGLE_CALENDAR_ID } from '../../config';
+import { GOOGLE_API_CLIENT_ID, GOOGLE_API_SECRET, GOOGLE_API_REFRESH_TOKEN, GOOGLE_CALENDAR_ID } from '../config';
 
 export type ICalendarDriver = {
   list(timeMin: string, timeMax: string): Promise<calendar_v3.Schema$Event[]>;
@@ -7,7 +7,7 @@ export type ICalendarDriver = {
   delete(eventId: string): Promise<void>;
 };
 
-export class CalendarDriver implements ICalendarDriver {
+export class GoogleCalendarDriver implements ICalendarDriver {
   private calendar: calendar_v3.Calendar;
   private calendarId: string;
 

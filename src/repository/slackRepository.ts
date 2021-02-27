@@ -1,6 +1,6 @@
 import { IncomingWebhook } from '@slack/webhook';
-import { SLACK_WEBHOOK_URL } from '../../config';
-import { ISlackRepository } from '../../usecase/cybozu2gcal';
+import { SLACK_WEBHOOK_URL } from '../config';
+import { ISlackRepository } from '../usecase/cybozu2gcal';
 
 const webhook = new IncomingWebhook(SLACK_WEBHOOK_URL);
 
