@@ -1,7 +1,16 @@
 import { Event } from '../entity';
-import { IWebDriver, EvaluateOutputData } from '../infra';
 import { tz } from '../lib';
 import { ICybozuRepository } from '../usecase/cybozu2gcal';
+
+export interface EvaluateOutputData {
+  title: string;
+  href: string;
+  eventTime?: string;
+}
+
+export interface IWebDriver {
+  evaluate: () => Promise<EvaluateOutputData[]>;
+}
 
 export class CybozuRepository implements ICybozuRepository {
   private driver: IWebDriver;

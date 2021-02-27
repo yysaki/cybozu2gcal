@@ -1,11 +1,7 @@
 import chromium from 'chrome-aws-lambda';
 import { Browser, Page } from 'puppeteer';
 import { CYBOZU_BASE_URL, CYBOZU_BASIC_AUTH, CYBOZU_USERNAME, CYBOZU_PASSWORD } from '../config';
-import { EvaluateOutputData } from './';
-
-export interface IWebDriver {
-  evaluate: () => Promise<EvaluateOutputData[]>;
-}
+import { EvaluateOutputData, IWebDriver } from '../repository';
 
 export class CybozuWebDriver implements IWebDriver {
   async evaluate(): Promise<EvaluateOutputData[]> {

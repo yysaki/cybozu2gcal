@@ -1,8 +1,13 @@
 import { calendar_v3 } from 'googleapis';
 import { Event } from '../entity';
-import { ICalendarDriver } from '../infra';
 import { dayjs, tz } from '../lib';
 import { IGoogleCalendarRepository } from '../usecase/cybozu2gcal';
+
+export type ICalendarDriver = {
+  list(timeMin: string, timeMax: string): Promise<calendar_v3.Schema$Event[]>;
+  insert(event: calendar_v3.Schema$Event): Promise<void>;
+  delete(eventId: string): Promise<void>;
+};
 
 export class GoogleCalendarRepository implements IGoogleCalendarRepository {
   private driver: ICalendarDriver;
