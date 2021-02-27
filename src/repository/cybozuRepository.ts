@@ -1,5 +1,4 @@
-import { Event } from '../entity';
-import { tz } from '../lib';
+import { DateTime, Event } from '../entity';
 import { ICybozuRepository } from '../usecase/cybozu2gcal';
 
 export interface EvaluateOutputData {
@@ -30,7 +29,7 @@ export class CybozuRepository implements ICybozuRepository {
     const hour = rest.hour === '24' ? '23' : rest.hour;
     const minute = rest.hour === '24' ? '59' : rest.minute;
 
-    return tz(`${date} ${hour}:${minute}`);
+    return new DateTime(`${date} ${hour}:${minute}`);
   }
 
   private eventFrom({ title, href, eventTime }: EvaluateOutputData): Event | undefined {
@@ -59,8 +58,8 @@ export class CybozuRepository implements ICybozuRepository {
     }
 
     const type: Event['type'] = 'date';
-    const startedAt = tz(date);
-    const endedAt = startedAt.add(1, 'day');
+    const startedAt = new DateTime(date);
+    const endedAt = startedAt.add1Day();
 
     return { id, type, title, startedAt, endedAt };
   }

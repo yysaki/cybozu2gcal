@@ -1,6 +1,5 @@
 import { calendar_v3 } from 'googleapis';
-import { Event } from '../entity';
-import { dayjs, tz } from '../lib';
+import { DateTime, Event } from '../entity';
 import { IGoogleCalendarRepository } from '../usecase/cybozu2gcal';
 
 export type ICalendarDriver = {
@@ -43,12 +42,12 @@ export class GoogleCalendarRepository implements IGoogleCalendarRepository {
     const title = rest.summary || '';
 
     if (start?.dateTime && end?.dateTime) {
-      const startedAt = dayjs(start.dateTime);
-      const endedAt = dayjs(end.dateTime);
+      const startedAt = new DateTime(start.dateTime);
+      const endedAt = new DateTime(end.dateTime);
       return { id, type: 'dateTime', googleEventId, title, startedAt, endedAt };
     } else {
-      const startedAt = tz(start?.date || '');
-      const endedAt = tz(end?.date || '');
+      const startedAt = new DateTime(start?.date || '');
+      const endedAt = new DateTime(end?.date || '');
       return { id, type: 'date', googleEventId, title, startedAt, endedAt };
     }
   }
