@@ -4,3 +4,6 @@ extends:
   - 'plugin:jest/recommended'
 plugins:
   - jest
+rules:
+  'import/no-unresolved':
+    - off # TODO: use eslint-import-resolver-typescript

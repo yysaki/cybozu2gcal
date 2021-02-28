@@ -31,8 +31,12 @@ const events: Event[] = [
 ];
 const googleRepository: IGoogleCalendarRepository = {
   list: jest.fn(async (_timeMin, _timeMax) => [events[0], events[1]]),
-  addEvents: jest.fn(async (_events) => {}),
-  deleteEvents: jest.fn(async (_events) => {}),
+  addEvents: jest.fn(async (_events) => {
+    return;
+  }),
+  deleteEvents: jest.fn(async (_events) => {
+    return;
+  }),
 };
 
 const cybozuRepository: ICybozuRepository = {
@@ -40,7 +44,9 @@ const cybozuRepository: ICybozuRepository = {
 };
 
 const slackRepository: ISlackRepository = {
-  notify: jest.fn(async (_params) => {}),
+  notify: jest.fn(async (_params) => {
+    return;
+  }),
 };
 
 describe('syncUsecaseInteractor', () => {
