@@ -5,12 +5,13 @@
   "main": "handler.js",
   "scripts": {
     "deploy": "sls deploy",
-    "lint": "eslint .",
+    "lint": "eslint . && prettier --check .",
     "lint:fix": "eslint . --fix && prettier . --write",
     "package": "sls package",
     "run": "sls invoke -f cybozu2gcal",
     "run:local": "sls invoke local -f cybozu2gcal",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@slack/webhook": "^5.0.4",
