@@ -6,10 +6,10 @@ export const syncUsecaseInteractor: SyncUsecase = (cybozuRepository, googleRepos
     try {
       const cybozuEvents = await cybozuRepository.list();
       const { timeMin, timeMax } = minMaxDateFrom(cybozuEvents);
-      const googleEvents = await googleRepository.list(timeMin.format(), timeMax.format());
+      const googleEvents = await googleRepository.list(timeMin.format(), timeMax.add1Day().format());
 
-      const deleteTargets = googleEvents.filter((e1) => cybozuEvents.every((e2) => !equals(e1, e2)));
-      const addTargets = cybozuEvents.filter((e1) => googleEvents.every((e2) => !equals(e1, e2)));
+      const deleteTargets = googleEvents.filter((g) => cybozuEvents.every((c) => !equals(g, c)));
+      const addTargets = cybozuEvents.filter((c) => googleEvents.every((g) => !equals(c, g)));
 
       await googleRepository.deleteEvents(deleteTargets);
       await googleRepository.addEvents(addTargets);
