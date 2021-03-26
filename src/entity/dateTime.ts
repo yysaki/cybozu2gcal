@@ -13,7 +13,7 @@ export class DateTime {
   #dateTime: Dayjs;
 
   constructor(date: dayjs.ConfigType) {
-    this.#dateTime = dayjs.tz(date, TIMEZONE);
+    this.#dateTime = dayjs(date).tz(TIMEZONE);
   }
 
   add1Day = (): DateTime => new DateTime(this.#dateTime.add(1, 'day'));
