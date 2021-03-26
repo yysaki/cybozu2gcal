@@ -34,4 +34,6 @@ jobs:
       - name: Run eslint
         run: yarn lint
       - name: Run test
+        env:
+          TZ: Asia/Tokyo
         run: yarn test:coverage
