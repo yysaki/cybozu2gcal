@@ -1,5 +1,5 @@
 import chromium from 'chrome-aws-lambda';
-import { Browser, Page } from 'puppeteer';
+import { Browser, Page } from 'puppeteer-core';
 import { CYBOZU_BASE_URL, CYBOZU_BASIC_AUTH, CYBOZU_USERNAME, CYBOZU_PASSWORD } from '../config';
 import { EvaluateOutputData, IWebDriver } from '../repository';
 
